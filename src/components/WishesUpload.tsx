@@ -6,21 +6,108 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from '@/components/ui/pagination';
+import { Image, Video } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const WishesUpload = () => {
   const [name, setName] = useState('');
   const [wish, setWish] = useState('');
-  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mediaType, setMediaType] = useState<'photo' | 'video'>('photo');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
   
-  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Sample wishes data (this would come from Supabase in a real implementation)
+  const sampleWishes = [
+    {
+      id: 1,
+      name: 'Ahmed Khalid',
+      wish: 'Wishing everyone at the Arabian Night festival an amazing time! May this celebration bring joy and create memories that last a lifetime.',
+      mediaType: 'photo',
+      mediaUrl: null,
+      avatar: 'AK',
+      avatarColor: 'bg-festival-blue',
+      timestamp: '2 hours ago'
+    },
+    {
+      id: 2,
+      name: 'Layla Samir',
+      wish: 'This event is always magical! Looking forward to dancing under the stars again and experiencing the amazing hospitality. See you all there!',
+      mediaType: null,
+      mediaUrl: null,
+      avatar: 'LS',
+      avatarColor: 'bg-festival-orange',
+      timestamp: '5 hours ago'
+    },
+    {
+      id: 3,
+      name: 'Mohammed Hassan',
+      wish: 'Cannot wait for the delicious food and amazing performances! The Arabian Night festival gets better every year.',
+      mediaType: 'video',
+      mediaUrl: null,
+      avatar: 'MH',
+      avatarColor: 'bg-festival-gold',
+      timestamp: '1 day ago'
+    },
+    {
+      id: 4,
+      name: 'Fatima Zahra',
+      wish: 'Looking forward to the traditional dances and music. The atmosphere is always electric!',
+      mediaType: 'photo',
+      mediaUrl: null,
+      avatar: 'FZ',
+      avatarColor: 'bg-festival-navy',
+      timestamp: '1 day ago'
+    },
+    {
+      id: 5,
+      name: 'Omar Farooq',
+      wish: 'I attended last year and it was incredible. The hospitality, food, and entertainment were all outstanding!',
+      mediaType: null,
+      mediaUrl: null,
+      avatar: 'OF',
+      avatarColor: 'bg-emerald-600',
+      timestamp: '2 days ago'
+    },
+    {
+      id: 6,
+      name: 'Aisha Malik',
+      wish: 'The Arabian Night festival is a highlight of my year. The atmosphere is magical and I always leave with wonderful memories.',
+      mediaType: 'photo',
+      mediaUrl: null,
+      avatar: 'AM',
+      avatarColor: 'bg-purple-600',
+      timestamp: '2 days ago'
+    }
+  ];
+  
+  // Calculate pagination
+  const totalPages = Math.ceil(sampleWishes.length / itemsPerPage);
+  const currentWishes = sampleWishes.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  
+  const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // Check if it's a video (you can add more video types if needed)
-      if (file.type.includes('video/')) {
-        setVideoFile(file);
+      const fileType = file.type;
+      
+      if (mediaType === 'photo' && fileType.includes('image/')) {
+        setMediaFile(file);
+      } else if (mediaType === 'video' && fileType.includes('video/')) {
+        setMediaFile(file);
       } else {
-        toast.error('Please upload a valid video file.');
+        toast.error(`Please upload a valid ${mediaType} file.`);
       }
     }
   };
@@ -34,8 +121,8 @@ const WishesUpload = () => {
       return;
     }
     
-    if (!wish.trim() && !videoFile) {
-      toast.error('Please enter a wish or upload a video.');
+    if (!wish.trim() && !mediaFile) {
+      toast.error('Please enter a wish or upload a photo/video.');
       return;
     }
     
@@ -49,7 +136,7 @@ const WishesUpload = () => {
       // Reset form
       setName('');
       setWish('');
-      setVideoFile(null);
+      setMediaFile(null);
       setIsSubmitting(false);
     }, 1500);
   };
@@ -70,7 +157,7 @@ const WishesUpload = () => {
             </h2>
             
             <p className="text-gray-700 text-lg mb-8 max-w-3xl mx-auto">
-              Leave a special message or upload a short video to share your thoughts and well-wishes for this celebration.
+              Leave a special message or upload a photo or video to share your thoughts and well-wishes for this celebration.
             </p>
           </div>
           
@@ -89,15 +176,43 @@ const WishesUpload = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="video" className="text-festival-blue">Upload Video (Optional)</Label>
-                  <Input
-                    id="video"
-                    type="file"
-                    accept="video/*"
-                    onChange={handleVideoChange}
-                    className="border-festival-gold/30 focus:border-festival-gold focus:ring-festival-gold"
-                  />
-                  <p className="text-xs text-gray-500">Max size: 50MB, Max duration: 30 seconds</p>
+                  <Label className="text-festival-blue">Upload Media (Optional)</Label>
+                  <Tabs 
+                    defaultValue="photo" 
+                    className="w-full" 
+                    onValueChange={(value) => setMediaType(value as 'photo' | 'video')}
+                  >
+                    <TabsList className="grid w-full grid-cols-2 mb-2">
+                      <TabsTrigger value="photo" className="flex items-center gap-1">
+                        <Image className="h-4 w-4" />
+                        Photo
+                      </TabsTrigger>
+                      <TabsTrigger value="video" className="flex items-center gap-1">
+                        <Video className="h-4 w-4" />
+                        Video
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="photo">
+                      <Input
+                        id="photo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleMediaChange}
+                        className="border-festival-gold/30 focus:border-festival-gold focus:ring-festival-gold"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Max size: 10MB</p>
+                    </TabsContent>
+                    <TabsContent value="video">
+                      <Input
+                        id="video"
+                        type="file"
+                        accept="video/*"
+                        onChange={handleMediaChange}
+                        className="border-festival-gold/30 focus:border-festival-gold focus:ring-festival-gold"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Max size: 50MB, Max duration: 30 seconds</p>
+                    </TabsContent>
+                  </Tabs>
                 </div>
               </div>
               
@@ -124,43 +239,79 @@ const WishesUpload = () => {
             </form>
           </div>
           
-          {/* Display some sample wishes */}
+          {/* Display wishes with pagination */}
           <div className="mt-16 space-y-6">
             <h3 className="font-display text-2xl text-center text-festival-blue mb-8">
               Recent Wishes
             </h3>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-festival-gold/20">
-                <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 rounded-full bg-festival-blue text-white flex items-center justify-center font-medium">
-                    AK
+              {currentWishes.map((item) => (
+                <div key={item.id} className="bg-white p-6 rounded-lg shadow-sm border border-festival-gold/20">
+                  <div className="flex items-center mb-3">
+                    <div className={`w-10 h-10 rounded-full ${item.avatarColor} text-white flex items-center justify-center font-medium`}>
+                      {item.avatar}
+                    </div>
+                    <div className="ml-3">
+                      <h4 className="font-medium text-festival-blue">{item.name}</h4>
+                      <p className="text-xs text-gray-500">{item.timestamp}</p>
+                    </div>
+                    {item.mediaType && (
+                      <div className="ml-auto">
+                        {item.mediaType === 'photo' ? (
+                          <Image size={18} className="text-festival-blue" />
+                        ) : (
+                          <Video size={18} className="text-festival-blue" />
+                        )}
+                      </div>
+                    )}
                   </div>
-                  <div className="ml-3">
-                    <h4 className="font-medium text-festival-blue">Ahmed Khalid</h4>
-                    <p className="text-xs text-gray-500">2 hours ago</p>
-                  </div>
+                  <p className="text-gray-700">{item.wish}</p>
                 </div>
-                <p className="text-gray-700">
-                  Wishing everyone at the Arabian Night festival an amazing time! May this celebration bring joy and create memories that last a lifetime.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-festival-gold/20">
-                <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 rounded-full bg-festival-orange text-white flex items-center justify-center font-medium">
-                    LS
-                  </div>
-                  <div className="ml-3">
-                    <h4 className="font-medium text-festival-blue">Layla Samir</h4>
-                    <p className="text-xs text-gray-500">5 hours ago</p>
-                  </div>
-                </div>
-                <p className="text-gray-700">
-                  This event is always magical! Looking forward to dancing under the stars again and experiencing the amazing hospitality. See you all there!
-                </p>
-              </div>
+              ))}
             </div>
+            
+            {/* Pagination controls */}
+            <Pagination className="mt-10">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }} 
+                    className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(index + 1);
+                      }}
+                      isActive={currentPage === index + 1}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    }}
+                    className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </motion.div>
       </div>
