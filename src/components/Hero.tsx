@@ -5,14 +5,9 @@ import { motion } from 'framer-motion';
 const Hero = () => {
   return (
     <section className="relative h-screen overflow-hidden bg-festival-blue">
-      {/* Background image */}
+      {/* Gradient background instead of image */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="/lovable-uploads/d296344f-8d67-47cb-b617-faf67fad5562.png" 
-          alt="Arabian Night Festival" 
-          className="w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-festival-blue/70 via-transparent to-festival-blue"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-festival-navy via-festival-blue to-festival-blue/90"></div>
       </div>
       
       {/* Content */}
