@@ -1,11 +1,10 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Fix the marker icon issue in Leaflet with React
+// Fix Leaflet icon issue
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -14,105 +13,98 @@ L.Icon.Default.mergeOptions({
 });
 
 const Location = () => {
-  // Location coordinates for Wieża Bismarcka, Łagiewniki
-  const position: [number, number] = [51.0970, 16.9645]; // This is a placeholder, use the actual coordinates
-  const [mapLoaded, setMapLoaded] = useState(false);
-
+  // Coordinates for Wieża Bismarcka, Łagiewniki
+  const position = [51.1789, 16.9896];
+  
   return (
-    <section id="location" className="py-20 bg-festival-blue text-white">
+    <section id="location" className="py-20 bg-festival-navy relative overflow-hidden">
+      <div className="decor-pattern absolute inset-0 opacity-10"></div>
+      
       <div className="container mx-auto px-4">
         <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-festival-gold mb-4">Location</h2>
+          <p className="text-white text-lg max-w-2xl mx-auto">
+            Join us at the historic Bismarck Tower in Łagiewniki for an unforgettable festival experience.
+          </p>
+        </motion.div>
+        
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="max-w-5xl mx-auto"
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="grid md:grid-cols-2 gap-8 items-center"
         >
-          <div className="text-center mb-12">
-            <h2 className="font-display text-4xl md:text-5xl text-festival-gold mb-6">
-              Join Us Here
-            </h2>
-            
-            <p className="text-lg mb-8 max-w-3xl mx-auto">
-              Our magical event takes place at the historic Wieża Bismarcka in Łagiewniki, Dolnośląskie.
-              A scenic location that transforms into our Arabian paradise.
+          <div className="bg-festival-blue/30 backdrop-blur-sm p-6 rounded-lg">
+            <h3 className="text-festival-gold text-2xl font-display font-bold mb-4">Wieża Bismarcka, Łagiewniki</h3>
+            <p className="text-white mb-4">
+              The Bismarck Tower in Łagiewniki offers a unique setting surrounded by nature, creating the perfect atmosphere for our Arabian-themed festival.
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div className="fancy-border h-[400px] md:h-[500px] overflow-hidden rounded-lg">
-              {typeof window !== 'undefined' && (
-                <MapContainer 
-                  center={position} 
-                  zoom={14} 
-                  style={{ height: '100%', width: '100%' }}
-                  whenReady={() => setMapLoaded(true)}
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
-                  <Marker position={position}>
-                    <Popup>
-                      Arabian Night & Arabian Day Festival <br/> Wieża Bismarcka, Łagiewniki
-                    </Popup>
-                  </Marker>
-                </MapContainer>
-              )}
-            </div>
-
-            <div>
-              <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
-                <h3 className="font-display text-2xl text-festival-gold mb-4">Event Details</h3>
-                
-                <div className="space-y-6">
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-festival-gold rounded-full text-festival-blue mr-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold mb-1">Dates</h4>
-                      <p>Friday, May 16 - Sunday, May 18</p>
-                      <p className="text-sm text-festival-gold">5:00 PM - 8:00 PM GMT+2</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-festival-gold rounded-full text-festival-blue mr-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold mb-1">Location</h4>
-                      <p>Wieża Bismarcka</p>
-                      <p className="text-sm">Łagiewniki, Dolnośląskie</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-festival-gold rounded-full text-festival-blue mr-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold mb-1">Weather</h4>
-                      <p>Expected temperature: 46°F to 62°F</p>
-                      <p className="text-sm">Prepare for cooler evenings</p>
-                    </div>
-                  </div>
-                </div>
+            <div className="space-y-3 text-white">
+              <div className="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-festival-gold mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Łagiewniki, Dolnośląskie, Poland</span>
+              </div>
+              <div className="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-festival-gold mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Festival opens: Friday, May 16 at 5:00 PM</span>
+              </div>
+              <div className="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-festival-gold mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span>Contact: +48 123 456 789</span>
               </div>
             </div>
+            
+            <div className="mt-6">
+              <a 
+                href="https://goo.gl/maps/JQBxzxGcSTgKFwFt5" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-6 py-3 bg-festival-gold text-festival-navy font-medium rounded-md hover:bg-festival-orange transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+          
+          <div className="h-[400px] rounded-lg overflow-hidden shadow-lg">
+            <MapContainer 
+              center={position} 
+              zoom={13} 
+              scrollWheelZoom={false}
+              style={{ height: "100%", width: "100%" }}
+              className="z-0"
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Marker position={position}>
+                <Popup>
+                  Arabian Night & Arabian Day Festival <br /> Wieża Bismarcka, Łagiewniki
+                </Popup>
+              </Marker>
+            </MapContainer>
           </div>
         </motion.div>
       </div>
-      
-      <div className="section-divider mt-20"></div>
     </section>
   );
 };

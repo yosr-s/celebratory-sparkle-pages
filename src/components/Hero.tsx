@@ -5,9 +5,14 @@ import { motion } from 'framer-motion';
 const Hero = () => {
   return (
     <section className="relative h-screen overflow-hidden bg-festival-blue">
-      {/* Gradient background instead of image */}
+      {/* Background image */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-festival-navy via-festival-blue to-festival-blue/90"></div>
+        <img 
+          src="/lovable-uploads/d296344f-8d67-47cb-b617-faf67fad5562.png" 
+          alt="Arabian Night Festival" 
+          className="w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-festival-blue/70 via-transparent to-festival-blue"></div>
       </div>
       
       {/* Content */}
@@ -18,15 +23,6 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
           className="max-w-4xl mx-auto text-center"
         >
-          <motion.div 
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
-            className="inline-block mb-6"
-          >
-            <img src="/lovable-uploads/8defa927-6b82-448f-aea0-2ee272ad036e.png" alt="Festival Emblem" className="h-24 mx-auto" />
-          </motion.div>
-          
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
